@@ -1,0 +1,3 @@
+Placeholder for game assets (images, audio, sprite sheets).
+
+Put files here and reference them via Phaser's loader in your scenes.

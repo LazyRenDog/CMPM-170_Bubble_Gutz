@@ -1,0 +1,17 @@
+{
+  "name": "bubble-gutz",
+  "version": "0.1.0",
+  "description": "Digital prototype for Bubble Gutz (Phaser 4 base)",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "phaser": "^4.2.1"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0"
+  }
+}
