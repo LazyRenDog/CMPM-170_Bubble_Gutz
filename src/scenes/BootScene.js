@@ -1,8 +1,11 @@
-import Phaser from 'phaser';
+import { GameManager } from "../../core/GameManager.js";
 
 export class BootScene extends Phaser.Scene {
   constructor() {
     super('Boot');
+  }
+
+  preload() { //load assets here
   }
 
   create() {
@@ -17,5 +20,11 @@ export class BootScene extends Phaser.Scene {
         color: '#ffffff',
       },
     ).setOrigin(0.5);
+
+    console.log(GameManager.Instance.get("moves"));
+  }
+
+  update(time) {
+    
   }
 }
