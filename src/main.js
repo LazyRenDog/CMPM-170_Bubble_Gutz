@@ -1,5 +1,6 @@
 //import Phaser from 'phaser';
 import { BootScene } from './scenes/BootScene.js';
+import { PlayScene } from './scenes/PlayScene.js';
 
 // Game window configuration
 const config = {
