@@ -6,6 +6,7 @@ export class PlayScene extends Phaser.Scene {
         this.tileSize = 90;
         this.boardOffsetX = 180;
         this.boardOffsetY = 180;
+        this.refOffsetX = 820; // right side of the screen
 
         // player grid position (bottom middle)
         this.playerCol = 1;
@@ -47,13 +48,12 @@ export class PlayScene extends Phaser.Scene {
             }
         }
 
-        // Monument at the top of the board
+        // Left side: Monument at the top of the board
         this.monument = this.add.rectangle(
             this.boardOffsetX + 1 * this.tileSize + 10,
             this.boardOffsetY - 80,
             this.tileSize - 20, 65, 0xd2b48c // wooden block color
         ).setOrigin(0);
-
         this.add.text(this.monument.x + 5, this.monument.y + 20, 'MONUMENT', {
             fontSize: '12px',
             color: '#000000'
@@ -67,7 +67,31 @@ export class PlayScene extends Phaser.Scene {
             0x00ff00
         );
 
-        // TODO: Add Wanderer grid and target monument indicator
+        // Right Side: Wanderer reference card (Blank chess grid for marking)
+        this.add.rectangle(
+            this.refOffsetX + 1 * this.tileSize + 10,
+            this.boardOffsetY - 80,
+            this.tileSize - 20, 65, 0x888888
+        ).setOrigin(0);
+        this.add.text(this.refOffsetX + 1 * this.tileSize + 15, this.boardOffsetY - 60, 'GOAL', {
+            fontSize: '14px',
+            color: '#ffffff'
+        });
+
+        // blank grid for wanderer
+        for (let r = 0; r < this.rows; r++) {
+            for (let c = 0; c < this.cols; c++) {
+                this.add.rectangle(
+                    this.refOffsetX + c * this.tileSize,
+                    this.boardOffsetY + r * this.tileSize,
+                    this.tileSize - 4,
+                    this.tileSize - 4,
+                    color
+                ).setOrigin(0);
+            }
+        }
+
+        // TODO: add clickable cells for wanderer's grid, buttons -> (maybe (?), for sure(X))
     }
 
     update() {
