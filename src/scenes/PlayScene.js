@@ -82,17 +82,32 @@ export class PlayScene extends Phaser.Scene {
         for (let r = 0; r < this.rows; r++) {
             for (let c = 0; c < this.cols; c++) {
                 let color = (r + c) % 2 === 0 ? 0xdddddd : 0xaaaaaa;
-                this.add.rectangle(
+                let cell = this.add.rectangle(
                     this.refOffsetX + c * this.tileSize,
                     this.boardOffsetY + r * this.tileSize,
                     this.tileSize - 4,
                     this.tileSize - 4,
                     color
-                ).setOrigin(0);
+                ).setOrigin(0).setInteractive();
+                
+                let markText = this.add.text(
+                    cell.x + 30,
+                    cell.y + 25,
+                    '',
+                    {fontSize: '32px', color: '#000000'}
+                );
+
+                // empty -> ? (maybe) -> X (for sure) -> P (player guess)
+                cell.on('pointerdown', () => {
+                    if (markText.text === '') markText.setText('?');
+                    else if (markText.text === '?') markText.setText('X');
+                    else if (markText.text === 'X') markText.setText('P');
+                    else markText.setText('');
+                });
             }
         }
 
-        // TODO: add clickable cells for wanderer's grid, buttons -> (maybe (?), for sure(X))
+        // TODO: add a control panel at bottom for movement
     }
 
     update() {
