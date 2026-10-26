@@ -6,6 +6,10 @@ export class PlayScene extends Phaser.Scene {
         this.tileSize = 90;
         this.boardOffsetX = 180;
         this.boardOffsetY = 180;
+
+        // player grid position (bottom middle)
+        this.playerCol = 1;
+        this.playerRow = 3;
     }
 
     preload() {
@@ -43,7 +47,27 @@ export class PlayScene extends Phaser.Scene {
             }
         }
 
-        // TODO: spawn monument at top and player at bottom
+        // Monument at the top of the board
+        this.monument = this.add.rectangle(
+            this.boardOffsetX + 1 * this.tileSize + 10,
+            this.boardOffsetY - 80,
+            this.tileSize - 20, 65, 0xd2b48c // wooden block color
+        ).setOrigin(0);
+
+        this.add.text(this.monument.x + 5, this.monument.y + 20, 'MONUMENT', {
+            fontSize: '12px',
+            color: '#000000'
+        });
+
+        // Player at the bottom of the board
+        this.playerToken = this.add.circle(
+            this.boardOffsetX + this.playerCol * this.tileSize + this.tileSize / 2,
+            this.boardOffsetY + this.playerRow * this.tileSize + this.tileSize / 2,
+            25,
+            0x00ff00
+        );
+
+        // TODO: Add Wanderer grid and target monument indicator
     }
 
     update() {
