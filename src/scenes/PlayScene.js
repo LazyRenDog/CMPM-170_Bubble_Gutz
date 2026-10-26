@@ -81,6 +81,7 @@ export class PlayScene extends Phaser.Scene {
         // blank grid for wanderer
         for (let r = 0; r < this.rows; r++) {
             for (let c = 0; c < this.cols; c++) {
+                let color = (r + c) % 2 === 0 ? 0xdddddd : 0xaaaaaa;
                 this.add.rectangle(
                     this.refOffsetX + c * this.tileSize,
                     this.boardOffsetY + r * this.tileSize,
