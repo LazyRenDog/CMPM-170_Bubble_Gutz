@@ -16,7 +16,7 @@ export class PlayScene extends Phaser.Scene {
         this.enemies = [
             { col: 0, row: 0, token: null },
             { col: 1, row: 1, token: null },
-            { col: 2, row: 0, token: null }
+            { col: 2, row: 1, token: null }
         ];
     }
 
