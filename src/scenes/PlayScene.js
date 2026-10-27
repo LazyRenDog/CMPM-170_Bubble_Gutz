@@ -38,6 +38,12 @@ export class PlayScene extends Phaser.Scene {
             color: '#ffffff'
         });
 
+        // status message for seer phrases
+        this.statusText = this.add.text(660, 60, 'Status: Fog Covers the Board (Wanderer Turn)', {
+            fontSize: '16px',
+            color: '#f87d02'
+        });
+
         // Draw board on theh left side
         for (let r = 0; r < this.rows; r++) {
             for (let c = 0; c < this.cols; c++) {
@@ -87,6 +93,20 @@ export class PlayScene extends Phaser.Scene {
                 enemy.token.y = this.boardOffsetY + enemy.row * this.tileSize + 25;
                 // TODO: add rule that DM can't move same enemy pice twice in a row
             });
+        });
+
+        // Fog implementation to hide DM/Seer side when Wanderer is looking
+        this.fogCover = this.add.rectangle(0, 60, 635, 660, 0x000000, 0.95).setOrigin(0);
+        this.fogCover.visible = false;
+
+        let toggleFogButton = this.add.text(20, 650, 'TOGGLE DM FOG COVER', {
+            fontSize: '18px',
+            color: '#000000',
+            backgroundColor: '#ffffff'
+        }).setInteractive();
+
+        toggleFogButton.on('pointerdown', () => {
+            this.fogCover.visible = !this.fogCover.visible;
         });
 
         // Right Side: Wanderer reference card (Blank chess grid for marking)
@@ -153,6 +173,15 @@ export class PlayScene extends Phaser.Scene {
             let nextCol = this.playerCol + dCol;
             let nextRow = this.playerRow + dRow;
 
+            // check if player moves into the monument from top middle tile 
+            // (col 1, row 0) -> (col 1, row -1)
+            if (nextCol === 1 && nextRow === -1) {
+                this.playerToken.y = this.monument.y + 30;
+                this.statusText.setText('Status: YOU WIN! YOU REACHED THE MONUMENT!');
+                // TODO: go to HUD win screen here
+                return;
+            }
+
             // keep the buttons in the board only
             if (nextCol >= 0 && nextCol < this.cols && nextRow >= 0 && nextRow < this.rows) {
                 this.playerCol = nextCol;
@@ -167,7 +196,10 @@ export class PlayScene extends Phaser.Scene {
     checkCollisiions() {
         this.enemies.forEach((enemy) => {
             if (enemy.col === this.playerCol && enemy.row === this.playerRow) {
-                console.log("You have been attacked! or something");
+                this.statusText.setText('Status: You have fainted! YOU WAKE UP BACK AT THE START');
+                // just added a simple back to start
+                this.playerRow = 3;
+                this.playerToken.y = this.boardOffsetY + this.playerRow * this.tileSize + this.tileSize / 2;
                 // TODO: roll dice to move player back random spaces and update heaalth to HUD
             }
         });
