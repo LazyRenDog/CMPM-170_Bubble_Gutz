@@ -1,5 +1,6 @@
 //import Phaser from 'phaser';
 import { BootScene } from './scenes/BootScene.js';
+import { PlayScene } from './scenes/PlayScene.js';
 
 // Game window configuration
 const config = {
@@ -8,7 +9,7 @@ const config = {
   width: 1280,
   height: 720,
   backgroundColor: '#1a1a2e',
-  scene: [BootScene],
+  scene: [BootScene, PlayScene],
   scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH
