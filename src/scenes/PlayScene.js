@@ -27,7 +27,7 @@ export class PlayScene extends Phaser.Scene {
             color: '#ffffff'
         });
 
-        this.add.text(660, 20, 'WANDERER REF CARD', {
+        this.add.text(660, 20, 'WANDERER REF CARD (Click to mark)', {
             fontSize: '24px',
             color: '#ffffff'
         });
@@ -59,12 +59,12 @@ export class PlayScene extends Phaser.Scene {
             color: '#000000'
         });
 
-        // Player at the bottom of the board
+            // Player at the bottom of the board
         this.playerToken = this.add.circle(
             this.boardOffsetX + this.playerCol * this.tileSize + this.tileSize / 2,
             this.boardOffsetY + this.playerRow * this.tileSize + this.tileSize / 2,
             25,
-            0x00ff00
+            0x0e03ad
         );
 
         // Right Side: Wanderer reference card (Blank chess grid for marking)
@@ -78,7 +78,7 @@ export class PlayScene extends Phaser.Scene {
             color: '#ffffff'
         });
 
-        // blank grid for wanderer
+            // blank grid for wanderer
         for (let r = 0; r < this.rows; r++) {
             for (let c = 0; c < this.cols; c++) {
                 let color = (r + c) % 2 === 0 ? 0xdddddd : 0xaaaaaa;
@@ -107,7 +107,38 @@ export class PlayScene extends Phaser.Scene {
             }
         }
 
-        // TODO: add a control panel at bottom for movement
+        // Control Panel at bottom (no diagonnal movement YET)
+        this.add.text(780, 560, 'CONTROLS', {
+            fontSize: '18px',
+            color: '#ffffff'
+        });
+        this.createMoveBtn(930, 600, '↑', 0, -1);
+        this.createMoveBtn(930, 640, '↓', 0, 1);
+        this.createMoveBtn(870, 620, '←', -1, 0);
+        this.createMoveBtn(990, 620, '→', 1, 0);
+
+        // TODO: add diagonal movement or tp spots
+    }
+
+    createMoveBtn(x, y, label, dCol, dRow) {
+        let button = this.add.text(x, y, `[${label}]`, {
+            fontSize: '25px',
+            color: '#000000',
+            backgroundColor: '#ffffff'
+        }).setInteractive();
+
+        button.on('pointerdown', () => {
+            let nextCol = this.playerCol + dCol;
+            let nextRow = this.playerRow + dRow;
+
+            // keep the buttons in the board only
+            if (nextCol >= 0 && nextCol < this.cols && netRow >= 0 && netRow < this.rows) {
+                this.playerCol = nextCol;
+                this.playerRow = nextRow;
+                this.playerToken.x = this.boardOffsetX + this.playerCol * this.tileSize + this.tileSize / 2;
+                this.playerToken.y = this.boardOffsetY + this.playerRow * this.tileSize + this.tileSize / 2;
+            }
+        });
     }
 
     update() {
