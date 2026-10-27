@@ -11,6 +11,12 @@ export class PlayScene extends Phaser.Scene {
         // player grid position (bottom middle)
         this.playerCol = 1;
         this.playerRow = 3;
+
+        // enemies controlled by seer currently
+        this.enemies = [
+            { col: 0, row: 0, token: null },
+            { col: 1, row: 1, token: null }
+        ];
     }
 
     preload() {
@@ -22,7 +28,7 @@ export class PlayScene extends Phaser.Scene {
         this.add.line(0, 0, 640, 0, 640, 720, 0xffffff).setOrigin(0, 0);
 
         // Labels for each side of the split screen
-        this.add.text(20, 20, 'SEER', {
+        this.add.text(20, 20, 'SEER (DM Currently)', {
             fontSize: '24px',
             color: '#ffffff'
         });
@@ -66,6 +72,22 @@ export class PlayScene extends Phaser.Scene {
             25,
             0x0e03ad
         );
+
+        // spawn 2 Enemy tokens (click them to cycle row position just for now)
+        this.enemies.forEach((enemy) => {
+            enemy.token = this.add.rectangle(
+                this.boardOffsetX + enemy.col * this.tileSize + 25,
+                this.boardOffsetY + enemy.row * this.tileSize + 25,
+                40, 40, 0xff0000
+            ).setOrigin(0).setInteractive();
+
+            // movement (click enemy to move it down/up columns)
+            enemy.token.on('pointerdown', () => {
+                enemy.row = (enemy.row + 1) % this.rows;
+                enemy.token.y = this.boardOffsetY + enemy.row * this.tileSize + 25;
+                // TODO: add rule that DM can't move same enemy pice twice in a row
+            });
+        });
 
         // Right Side: Wanderer reference card (Blank chess grid for marking)
         this.add.rectangle(
@@ -132,11 +154,21 @@ export class PlayScene extends Phaser.Scene {
             let nextRow = this.playerRow + dRow;
 
             // keep the buttons in the board only
-            if (nextCol >= 0 && nextCol < this.cols && netRow >= 0 && netRow < this.rows) {
+            if (nextCol >= 0 && nextCol < this.cols && nextRow >= 0 && nextRow < this.rows) {
                 this.playerCol = nextCol;
                 this.playerRow = nextRow;
                 this.playerToken.x = this.boardOffsetX + this.playerCol * this.tileSize + this.tileSize / 2;
                 this.playerToken.y = this.boardOffsetY + this.playerRow * this.tileSize + this.tileSize / 2;
+                this.checkCollisiions();
+            }
+        });
+    }
+
+    checkCollisiions() {
+        this.enemies.forEach((enemy) => {
+            if (enemy.col === this.playerCol && enemy.row === this.playerRow) {
+                console.log("You have been attacked! or something");
+                // TODO: roll dice to move player back random spaces and update heaalth to HUD
             }
         });
     }
