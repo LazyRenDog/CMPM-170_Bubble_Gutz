@@ -71,7 +71,7 @@ export class PlayScene extends Phaser.Scene {
             color: '#000000'
         });
 
-            // Player at the bottom of the board
+        // Player at the bottom of the board
         this.playerToken = this.add.circle(
             this.boardOffsetX + this.playerCol * this.tileSize + this.tileSize / 2,
             this.boardOffsetY + this.playerRow * this.tileSize + this.tileSize / 2,
@@ -129,57 +129,76 @@ export class PlayScene extends Phaser.Scene {
         });
 
         // Right Side: Wanderer reference card (Blank chess grid for marking)
-        this.add.rectangle(
-            this.refOffsetX + 1 * this.tileSize + 10,
-            this.boardOffsetY - 80,
-            this.tileSize - 20, 65, 0x888888
-        ).setOrigin(0);
-        this.add.text(this.refOffsetX + 1 * this.tileSize + 15, this.boardOffsetY - 60, 'GOAL', {
-            fontSize: '14px',
-            color: '#ffffff'
-        });
+        // this.add.rectangle(
+        //     this.refOffsetX + 1 * this.tileSize + 10,
+        //     this.boardOffsetY - 80,
+        //     this.tileSize - 20, 65, 0x888888
+        // ).setOrigin(0);
+        // this.add.text(this.refOffsetX + 1 * this.tileSize + 15, this.boardOffsetY - 60, 'GOAL', {
+        //     fontSize: '14px',
+        //     color: '#ffffff'
+        // });
 
-            // blank grid for wanderer
-        for (let r = 0; r < this.rows; r++) {
-            for (let c = 0; c < this.cols; c++) {
-                let color = (r + c) % 2 === 0 ? 0xdddddd : 0xaaaaaa;
-                let cell = this.add.rectangle(
-                    this.refOffsetX + c * this.tileSize,
-                    this.boardOffsetY + r * this.tileSize,
-                    this.tileSize - 4,
-                    this.tileSize - 4,
-                    color
-                ).setOrigin(0).setInteractive();
-                
-                let markText = this.add.text(
-                    cell.x + 30,
-                    cell.y + 25,
-                    '',
-                    {fontSize: '32px', color: '#000000'}
-                );
+        // blank grid for wanderer
+        // for (let r = 0; r < this.rows; r++) {
+        //     for (let c = 0; c < this.cols; c++) {
+        //         let color = (r + c) % 2 === 0 ? 0xdddddd : 0xaaaaaa;
+        //         let cell = this.add.rectangle(
+        //             this.refOffsetX + c * this.tileSize,
+        //             this.boardOffsetY + r * this.tileSize,
+        //             this.tileSize - 4,
+        //             this.tileSize - 4,
+        //             color
+        //         ).setOrigin(0).setInteractive();
 
-                // empty -> ? (maybe) -> X (for sure) -> P (player guess)
-                cell.on('pointerdown', () => {
-                    if (markText.text === '') markText.setText('?');
-                    else if (markText.text === '?') markText.setText('X');
-                    else if (markText.text === 'X') markText.setText('P');
-                    else markText.setText('');
-                });
-            }
-        }
+        //         let markText = this.add.text(
+        //             cell.x + 30,
+        //             cell.y + 25,
+        //             '',
+        //             { fontSize: '32px', color: '#000000' }
+        //         );
+
+        //         // empty -> ? (maybe) -> X (for sure) -> P (player guess)
+        //         cell.on('pointerdown', () => {
+        //             if (markText.text === '') markText.setText('?');
+        //             else if (markText.text === '?') markText.setText('X');
+        //             else if (markText.text === 'X') markText.setText('P');
+        //             else markText.setText('');
+        //         });
+        //     }
+        // }
 
         // Control Panel at bottom (no diagonnal movement YET)
-        this.add.text(780, 560, 'CONTROLS', {
-            fontSize: '18px',
-            color: '#ffffff'
-        });
-        this.createMoveBtn(930, 600, '↑', 0, -1);
-        this.createMoveBtn(930, 640, '↓', 0, 1);
-        this.createMoveBtn(870, 620, '←', -1, 0);
-        this.createMoveBtn(990, 620, '→', 1, 0);
+        // this.add.text(780, 560, 'CONTROLS', {
+        //     fontSize: '18px',
+        //     color: '#ffffff'
+        // });
+        // this.createMoveBtn(930, 600, '↑', 0, -1);
+        // this.createMoveBtn(930, 640, '↓', 0, 1);
+        // this.createMoveBtn(870, 620, '←', -1, 0);
+        // this.createMoveBtn(990, 620, '→', 1, 0);
 
         // TODO: add diagonal movement or tp spots
+
+        const wandererButton = this.add.text(
+            this.refOffsetX + 150,
+            this.cameras.main.centerY + 50,
+            'WandererPOV',
+            {
+                fontFamily: 'Courier New',
+                fontSize: '28px',
+                color: '#888a88',
+                padding: { x: 10, y: 5 }
+            }
+        ).setOrigin(0.5).setInteractive();
+
+        wandererButton.on('pointerdown', () => {
+            this.scene.start('WandererScene');
+        });
+
+
     }
+
 
     createMoveBtn(x, y, label, dCol, dRow) {
         let button = this.add.text(x, y, `[${label}]`, {

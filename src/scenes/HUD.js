@@ -18,9 +18,9 @@ export class HUD extends Phaser.Scene {
         this.playerHealth = this.add.text(10, 100, "Health: 3",{ //guessing on loc + size values, can be changed later !
             fontSize: '30px',
             fontFamily: 'Courier New',
-            color: '#ffffff' //white
-            stroke: '#000000' //black outline
-            strokeThickness: '5'
+            color: '#ffffff', //white
+            stroke: '#000000', //black outline
+            strokeThickness: '5',
         }).setScrollFactor(0); //don't let text scroll
 
         //---- listeners ----
