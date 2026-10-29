@@ -92,15 +92,21 @@ export class PlayScene extends Phaser.Scene {
             this.input.setDraggable(enemy.token);
             enemy.token.on('drag', (pointer, dragX, dragY) => {
                 // Calculate the new column and row based on drag position
-                let newCol = Math.floor((dragX - this.boardOffsetX) / this.tileSize);
-                let newRow = Math.floor((dragY - this.boardOffsetY) / this.tileSize);
+                enemy.token.x = dragX;
+                enemy.token.y = dragY;
+            });
+
+            //snap to grid on drag end
+            enemy.token.on('dragend', () => {
+                let newCol = Math.floor((enemy.token.x - this.boardOffsetX) / this.tileSize);
+                let newRow = Math.floor((enemy.token.y - this.boardOffsetY) / this.tileSize);
+                //make sure to keep enemy in the bounds of the board
                 enemy.col = Phaser.Math.Clamp(newCol, 0, this.cols - 1);
                 enemy.row = Phaser.Math.Clamp(newRow, 0, this.rows - 1);
                 enemy.token.x = this.boardOffsetX + enemy.col * this.tileSize + 25;
                 enemy.token.y = this.boardOffsetY + enemy.row * this.tileSize + 25;
             });
-
-
+            //OLD CODE:
             /*enemy.token.on('pointerdown', () => {
                 enemy.row = (enemy.row + 1) % this.rows;
                 enemy.token.y = this.boardOffsetY + enemy.row * this.tileSize + 25;
