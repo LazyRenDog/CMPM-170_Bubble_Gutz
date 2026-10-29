@@ -114,7 +114,7 @@ export class PlayScene extends Phaser.Scene {
         });
 
         // Fog implementation to hide DM/Seer side when Wanderer is looking
-        this.fogCover = this.add.rectangle(0, 60, 635, 660, 0x000000, 0.95).setOrigin(0);
+        this.fogCover = this.add.rectangle(0, 60, 635, 660, 0x000000, 1).setOrigin(0);
         this.fogCover.visible = false;
 
         let toggleFogButton = this.add.text(20, 650, 'TOGGLE DM FOG COVER', {
