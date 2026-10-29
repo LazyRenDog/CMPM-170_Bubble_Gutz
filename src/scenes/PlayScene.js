@@ -14,8 +14,7 @@ export class PlayScene extends Phaser.Scene {
 
         // enemies controlled by seer currently
         this.enemies = [
-            { col: 0, row: 0, token: null },
-            { col: 1, row: 1, token: null }
+            { col: 0, row: 0, token: null }
         ];
     }
 
