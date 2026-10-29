@@ -87,12 +87,25 @@ export class PlayScene extends Phaser.Scene {
                 40, 40, 0xff0000
             ).setOrigin(0).setInteractive();
 
-            // movement (click enemy to move it down/up columns)
-            enemy.token.on('pointerdown', () => {
+            // movement (click enemy to move it down/up columns
+            //changing movement to drag and drop instead of click to move down/up columns
+            this.input.setDraggable(enemy.token);
+            enemy.token.on('drag', (pointer, dragX, dragY) => {
+                // Calculate the new column and row based on drag position
+                let newCol = Math.floor((dragX - this.boardOffsetX) / this.tileSize);
+                let newRow = Math.floor((dragY - this.boardOffsetY) / this.tileSize);
+                enemy.col = Phaser.Math.Clamp(newCol, 0, this.cols - 1);
+                enemy.row = Phaser.Math.Clamp(newRow, 0, this.rows - 1);
+                enemy.token.x = this.boardOffsetX + enemy.col * this.tileSize + 25;
+                enemy.token.y = this.boardOffsetY + enemy.row * this.tileSize + 25;
+            });
+
+
+            /*enemy.token.on('pointerdown', () => {
                 enemy.row = (enemy.row + 1) % this.rows;
                 enemy.token.y = this.boardOffsetY + enemy.row * this.tileSize + 25;
                 // TODO: add rule that DM can't move same enemy pice twice in a row
-            });
+            });*/
         });
 
         // Fog implementation to hide DM/Seer side when Wanderer is looking
