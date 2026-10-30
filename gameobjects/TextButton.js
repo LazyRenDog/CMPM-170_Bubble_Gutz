@@ -1,5 +1,5 @@
 export class TextButton extends Phaser.GameObjects.Text {
-    constructor(scene, x, y, text, style, callback) {
+    constructor(scene, x, y, text, style, callback, options = {}) {
         super(scene, x, y, text, style);
 
         if(style == 'default') {
@@ -8,16 +8,14 @@ export class TextButton extends Phaser.GameObjects.Text {
                 fontSize: '16px',
                 color: '#ffffff',
                 align: 'center',
-                fixedWidth: 100,
                 backgroundColor: '#0c2a8cff'
             });
         } else if (style == 'dark') {
             this.setStyle({
-                fontFamily: 'sans-serif',
+                fontFamily: 'Courier New',
                 fontSize: '16px',
                 color: '#ffffff',
                 align: 'center',
-                fixedWidth: 100,
                 backgroundColor: '#383838'
             });
         }
@@ -28,10 +26,23 @@ export class TextButton extends Phaser.GameObjects.Text {
             .on('pointerdown', () => { this.setBackgroundColor('#8d8d8d'); }) //change purple when clicked
             .on('pointerup', () => { callback(); }); //run callback function when clicked
 
-        this.setPadding(20);
+        this.setFixedSize(options.width ?? 0, 0);
+        this.setPadding(options.height ?? 20);
         this.setDepth(10);
-        this.setOrigin(1,1);
+        this.setOrigin(options.origin ?? 0.5, options.origin ?? 0.5);
         this.setScrollFactor(0);
         scene.add.existing(this);
     }
 }
+
+/**
+ * Example:
+ * let button = new TextButton(this, 500, 500, () => {
+ *   myFunction();
+ * },
+ * {
+ *   width: 300,
+ *   height: 30,
+ *   origin: 1, //0 for top left corner, 0.5 is center which is default, 1 is bottom right
+ * });
+ */
