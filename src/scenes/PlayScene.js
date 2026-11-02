@@ -12,6 +12,9 @@ export class PlayScene extends Phaser.Scene {
         this.playerCol = 1;
         this.playerRow = 3;
 
+        //checking for diceroll
+        this.isRolling = false;
+
         // enemies controlled by seer currently
         this.enemies = [
             { col: 0, row: 0, token: null },
@@ -179,6 +182,19 @@ export class PlayScene extends Phaser.Scene {
         this.createMoveBtn(990, 620, '→', 1, 0);
 
         // TODO: add diagonal movement or tp spots
+
+        //creating instructions button
+        // Instructions button
+        let instructionsBtn = this.add.text(20, 100, '[ INSTRUCTIONS ]', {
+            fontSize: '18px',
+            color: '#ffffff',
+            backgroundColor: '#444444',
+            padding: { x: 10, y: 8 }
+        }).setInteractive();
+
+        instructionsBtn.on('pointerdown', () => {
+            this.showInstructions();
+        });
     }
 
     createMoveBtn(x, y, label, dCol, dRow) {
@@ -189,6 +205,7 @@ export class PlayScene extends Phaser.Scene {
         }).setInteractive();
 
         button.on('pointerdown', () => {
+            if (this.isRolling) return;
             let nextCol = this.playerCol + dCol;
             let nextRow = this.playerRow + dRow;
 
@@ -207,12 +224,71 @@ export class PlayScene extends Phaser.Scene {
                 this.playerRow = nextRow;
                 this.playerToken.x = this.boardOffsetX + this.playerCol * this.tileSize + this.tileSize / 2;
                 this.playerToken.y = this.boardOffsetY + this.playerRow * this.tileSize + this.tileSize / 2;
-                this.checkCollisiions();
+                this.checkCollisions();
             }
         });
     }
 
-    checkCollisiions() {
+    //Instructions for the game
+    showInstructions() {
+    // Dark popup background
+        let popup = this.add.rectangle(
+            640, 360, 750, 500, 0x222222
+        ).setStrokeStyle(3, 0xffffff)
+        .setInteractive();
+
+        // Instructions text
+        let instructions = this.add.text(320, 150,
+            `PROTOTYPE INSTRUCTIONS
+
+    PLAYER 1: SEER
+    - View the board and control enemy pieces.
+    - Answer 3 yes/no questions truthfully.
+    - Goal: Catch the Wanderer.
+
+    PLAYER 2: WANDERER
+    - Use the reference card to track the board.
+    - Ask 3 yes/no questions each turn.
+    - Goal: Reach the monument without being caught.
+
+    MOVEMENT RULES
+    - Each player moves once per turn.
+    - Move one tile up, down, left, or right.
+    - No diagonal movement.`,
+            {
+                fontSize: '18px',
+                color: '#ffffff',
+                lineSpacing: 8
+            }
+        );
+
+        // Close button
+        let closeBtn = this.add.text(960, 125, '[ X ]', {
+            fontSize: '22px',
+            color: '#ff5555',
+            backgroundColor: '#444444'
+        }).setInteractive();
+
+        closeBtn.on('pointerdown', () => {
+            popup.destroy();
+            instructions.destroy();
+            closeBtn.destroy();
+        });
+    }
+
+    checkCollisions() {
+        if (this.isRolling) return;
+
+        let collision = this.enemies.some((enemy) => enemy.col === this.playerCol && enemy.row === this.playerRow);
+
+        if (collision) {
+            let diceRoll = Phaser.Math.Between(1, 6);
+
+            this.statusText.setText(`Status: You have fainted! You rolled a ${diceRoll}`);
+            this.movePlayerRandomly(diceRoll);
+        }
+        //old code for collision detection with enemies
+        /*
         this.enemies.forEach((enemy) => {
             if (enemy.col === this.playerCol && enemy.row === this.playerRow) {
                 this.statusText.setText('Status: You have fainted! YOU WAKE UP BACK AT THE START');
@@ -220,6 +296,48 @@ export class PlayScene extends Phaser.Scene {
                 this.playerRow = 3;
                 this.playerToken.y = this.boardOffsetY + this.playerRow * this.tileSize + this.tileSize / 2;
                 // TODO: roll dice to move player back random spaces and update heaalth to HUD
+            }
+        });
+        */
+    }
+    //more to the dice roll
+    movePlayerRandomly(steps) {
+        this.isRolling = true;
+        const directions = [
+            { col: 0, row: -1 }, // up
+            { col: 0, row: 1 },  // down
+            { col: -1, row: 0 }, // left
+            { col: 1, row: 0 }  // right
+        ];
+        let moves = 0;
+        this.time.addEvent({
+            delay: 300,
+            repeat: steps - 1,
+            
+            callback: () => {
+                let validMoves = directions.filter(direction => {
+                    let newCol = this.playerCol + direction.col;
+                    let newRow = this.playerRow + direction.row;
+                    return newCol >= 0 && newCol < this.cols && newRow >= 0 && newRow < this.rows;
+                });
+
+                if (validMoves.length === 0) {
+                    return;
+                }
+                let direction = Phaser.Utils.Array.GetRandom(validMoves);
+                
+                this.playerCol += direction.col;
+                this.playerRow += direction.row;
+                
+                this.playerToken.x = this.boardOffsetX + this.playerCol * this.tileSize + this.tileSize / 2;
+                this.playerToken.y = this.boardOffsetY + this.playerRow * this.tileSize + this.tileSize / 2;
+                moves++;
+
+                if (moves >= steps) {
+                    this.isRolling = false;
+                    //check on landing on other enemy
+                    this.checkCollisions();
+                }
             }
         });
     }
