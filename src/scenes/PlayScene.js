@@ -12,6 +12,9 @@ export class PlayScene extends Phaser.Scene {
         this.playerCol = 1;
         this.playerRow = 3;
 
+        //checking for diceroll
+        this.isRolling = false;
+
         // enemies controlled by seer currently
         this.enemies = [
             { col: 0, row: 0, token: null },
@@ -202,6 +205,7 @@ export class PlayScene extends Phaser.Scene {
         }).setInteractive();
 
         button.on('pointerdown', () => {
+            if (this.isRolling) return;
             let nextCol = this.playerCol + dCol;
             let nextRow = this.playerRow + dRow;
 
@@ -220,7 +224,7 @@ export class PlayScene extends Phaser.Scene {
                 this.playerRow = nextRow;
                 this.playerToken.x = this.boardOffsetX + this.playerCol * this.tileSize + this.tileSize / 2;
                 this.playerToken.y = this.boardOffsetY + this.playerRow * this.tileSize + this.tileSize / 2;
-                this.checkCollisiions();
+                this.checkCollisions();
             }
         });
     }
@@ -272,7 +276,19 @@ export class PlayScene extends Phaser.Scene {
         });
     }
 
-    checkCollisiions() {
+    checkCollisions() {
+        if (this.isRolling) return;
+
+        let collision = this.enemies.some((enemy) => enemy.col === this.playerCol && enemy.row === this.playerRow);
+
+        if (collision) {
+            let diceRoll = Phaser.Math.Between(1, 6);
+
+            this.statusText.setText(`Status: You have fainted! You rolled a ${diceRoll}`);
+            this.movePlayerRandomly(diceRoll);
+        }
+        //old code for collision detection with enemies
+        /*
         this.enemies.forEach((enemy) => {
             if (enemy.col === this.playerCol && enemy.row === this.playerRow) {
                 this.statusText.setText('Status: You have fainted! YOU WAKE UP BACK AT THE START');
@@ -280,6 +296,48 @@ export class PlayScene extends Phaser.Scene {
                 this.playerRow = 3;
                 this.playerToken.y = this.boardOffsetY + this.playerRow * this.tileSize + this.tileSize / 2;
                 // TODO: roll dice to move player back random spaces and update heaalth to HUD
+            }
+        });
+        */
+    }
+    //more to the dice roll
+    movePlayerRandomly(steps) {
+        this.isRolling = true;
+        const directions = [
+            { col: 0, row: -1 }, // up
+            { col: 0, row: 1 },  // down
+            { col: -1, row: 0 }, // left
+            { col: 1, row: 0 }  // right
+        ];
+        let moves = 0;
+        this.time.addEvent({
+            delay: 300,
+            repeat: steps - 1,
+            
+            callback: () => {
+                let validMoves = directions.filter(direction => {
+                    let newCol = this.playerCol + direction.col;
+                    let newRow = this.playerRow + direction.row;
+                    return newCol >= 0 && newCol < this.cols && newRow >= 0 && newRow < this.rows;
+                });
+
+                if (validMoves.length === 0) {
+                    return;
+                }
+                let direction = Phaser.Utils.Array.GetRandom(validMoves);
+                
+                this.playerCol += direction.col;
+                this.playerRow += direction.row;
+                
+                this.playerToken.x = this.boardOffsetX + this.playerCol * this.tileSize + this.tileSize / 2;
+                this.playerToken.y = this.boardOffsetY + this.playerRow * this.tileSize + this.tileSize / 2;
+                moves++;
+
+                if (moves >= steps) {
+                    this.isRolling = false;
+                    //check on landing on other enemy
+                    this.checkCollisions();
+                }
             }
         });
     }
