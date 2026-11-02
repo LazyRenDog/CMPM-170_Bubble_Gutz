@@ -179,6 +179,19 @@ export class PlayScene extends Phaser.Scene {
         this.createMoveBtn(990, 620, '→', 1, 0);
 
         // TODO: add diagonal movement or tp spots
+
+        //creating instructions button
+        // Instructions button
+        let instructionsBtn = this.add.text(20, 100, '[ INSTRUCTIONS ]', {
+            fontSize: '18px',
+            color: '#ffffff',
+            backgroundColor: '#444444',
+            padding: { x: 10, y: 8 }
+        }).setInteractive();
+
+        instructionsBtn.on('pointerdown', () => {
+            this.showInstructions();
+        });
     }
 
     createMoveBtn(x, y, label, dCol, dRow) {
@@ -209,6 +222,53 @@ export class PlayScene extends Phaser.Scene {
                 this.playerToken.y = this.boardOffsetY + this.playerRow * this.tileSize + this.tileSize / 2;
                 this.checkCollisiions();
             }
+        });
+    }
+
+    //Instructions for the game
+    showInstructions() {
+    // Dark popup background
+        let popup = this.add.rectangle(
+            640, 360, 750, 500, 0x222222
+        ).setStrokeStyle(3, 0xffffff)
+        .setInteractive();
+
+        // Instructions text
+        let instructions = this.add.text(320, 150,
+            `PROTOTYPE INSTRUCTIONS
+
+    PLAYER 1: SEER
+    - View the board and control enemy pieces.
+    - Answer 3 yes/no questions truthfully.
+    - Goal: Catch the Wanderer.
+
+    PLAYER 2: WANDERER
+    - Use the reference card to track the board.
+    - Ask 3 yes/no questions each turn.
+    - Goal: Reach the monument without being caught.
+
+    MOVEMENT RULES
+    - Each player moves once per turn.
+    - Move one tile up, down, left, or right.
+    - No diagonal movement.`,
+            {
+                fontSize: '18px',
+                color: '#ffffff',
+                lineSpacing: 8
+            }
+        );
+
+        // Close button
+        let closeBtn = this.add.text(960, 125, '[ X ]', {
+            fontSize: '22px',
+            color: '#ff5555',
+            backgroundColor: '#444444'
+        }).setInteractive();
+
+        closeBtn.on('pointerdown', () => {
+            popup.destroy();
+            instructions.destroy();
+            closeBtn.destroy();
         });
     }
 
