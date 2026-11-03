@@ -14,10 +14,16 @@ export class Board extends Phaser.GameObjects.Container {
     }
 
     build() {
+        let letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
         for (let r = 0; r < this.rows; r++) {
             for (let c = 0; c < this.cols; c++) {
                 let isLight = (r + c) % 2 === 0; // even or odd trick
                 let color = isLight ?  this.colorLight : this.colorDark; // like post-it notes orange shades
+
+                if(c == 0) {
+                    let rowLabel = this.scene.add.text(c - this.tileSize + 45, r * this.tileSize + 30, letters[r], { fontSize: '32px'});
+                    this.add(rowLabel);
+                }
 
                 let cell = this.scene.add.rectangle(
                     c * this.tileSize,
@@ -45,6 +51,13 @@ export class Board extends Phaser.GameObjects.Container {
                     });
 
                     this.add(markText);
+                }
+
+                if(r == this.rows - 1) {
+                    for (let c = 0; c < this.cols; c++) {
+                        let colLabel = this.scene.add.text(c  * this.tileSize + 30, this.tileSize * (r+1) + 20, c + 1, { fontSize: '32px'});
+                        this.add(colLabel);
+                    }
                 }
             }
         }
