@@ -8,6 +8,16 @@ export class PlayScene extends Phaser.Scene {
         this.boardOffsetY = 180;
         this.refOffsetX = 820; // right side of the screen
 
+        // label parameters
+        this.labelRowOffsetX = this.boardOffsetX - 60
+        this.labelRowOffsetY = this.boardOffsetY + 29 // half of tilesize - fontsize
+
+        this.labelColOffsetX = this.labelRowOffsetX + 89
+        this.labelColOffSetY = this.labelRowOffsetY + this.tileSize * 4  - 20// multiply by amount of rows
+        
+        this.refLabelOffsetX = this.refOffsetX - 60 // right side row labels
+        this.refColLabelOffsetX = this.refLabelOffsetX + 89
+
         // player grid position (bottom middle)
         this.playerCol = 1;
         this.playerRow = 3;
@@ -27,7 +37,7 @@ export class PlayScene extends Phaser.Scene {
     }
 
     create() {
-        // SPlit screen divider line
+        // Split screen divider line
         this.add.line(0, 0, 640, 0, 640, 720, 0xffffff).setOrigin(0, 0);
 
         // Labels for each side of the split screen
@@ -47,7 +57,26 @@ export class PlayScene extends Phaser.Scene {
             color: '#f87d02'
         });
 
-        // Draw board on theh left side
+        // Labels for left board
+        // row labels
+        this.leftRowA = this.add.text(this.labelRowOffsetX, this.labelRowOffsetY, 'A', {
+            fontSize: '32px',
+            color: '#ffffff'
+        });
+        this.leftRowB = this.add.text(this.labelRowOffsetX, this.labelRowOffsetY + this.tileSize, 'B', { fontSize: '32px'});
+        this.leftRowC = this.add.text(this.labelRowOffsetX, this.labelRowOffsetY + this.tileSize*2, 'C', {fontSize: '32px'});
+        this.leftRowD = this.add.text(this.labelRowOffsetX, this.labelRowOffsetY + this.tileSize*3, 'D', {fontSize: '32px'});
+        
+        // column labels
+        this.leftCol1 = this.add.text(this.labelColOffsetX, this.labelColOffSetY, '1', {
+            fontSize: '32px',
+            color: '#ffffff'
+        });
+        this.leftCol2 = this.add.text(this.labelColOffsetX + this.tileSize, this.labelColOffSetY, '2', {fontSize: '32px'});
+        this.leftCol3 = this.add.text(this.labelColOffsetX + this.tileSize*2, this.labelColOffSetY, '3', {fontSize: '32px'});
+
+
+        // Draw board on the left side
         for (let r = 0; r < this.rows; r++) {
             for (let c = 0; c < this.cols; c++) {
                 let isLight = (r + c) % 2 === 0; // even or odd trick
@@ -172,7 +201,7 @@ export class PlayScene extends Phaser.Scene {
         }
 
         // Control Panel at bottom (no diagonnal movement YET)
-        this.add.text(780, 560, 'CONTROLS', {
+        this.add.text(this.refOffsetX + 1 * this.tileSize, 688, 'CONTROLS', {
             fontSize: '18px',
             color: '#ffffff'
         });
@@ -182,6 +211,22 @@ export class PlayScene extends Phaser.Scene {
         this.createMoveBtn(990, 620, '→', 1, 0);
 
         // TODO: add diagonal movement or tp spots
+
+        // row labels for right board
+        this.rightA = this.add.text(this.refLabelOffsetX, this.labelRowOffsetY, 'A', {
+            fontSize: '32px',
+            color: '#ffffff'
+        });
+        this.rightB = this.add.text(this.refLabelOffsetX, this.labelRowOffsetY + this.tileSize, 'B', {fontSize: '32px'});
+        this.rightC = this.add.text(this.refLabelOffsetX, this.labelRowOffsetY + this.tileSize*2, 'C', {fontSize: '32px',});
+        this.rightC = this.add.text(this.refLabelOffsetX, this.labelRowOffsetY + this.tileSize*3, 'D', {fontSize: '32px',});
+
+        this.leftCol1 = this.add.text(this.refColLabelOffsetX, this.labelColOffSetY, '1', {
+            fontSize: '32px',
+            color: '#ffffff'
+        });
+        this.leftCol2 = this.add.text(this.refColLabelOffsetX + this.tileSize, this.labelColOffSetY, '2', {fontSize: '32px'});
+        this.leftCol3 = this.add.text(this.refColLabelOffsetX + this.tileSize*2, this.labelColOffSetY, '3', {fontSize: '32px'});
 
         //creating instructions button
         // Instructions button
