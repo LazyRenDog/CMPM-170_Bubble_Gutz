@@ -53,4 +53,8 @@ export class Board extends Phaser.GameObjects.Container {
     getOffset() {
         return [this.x, this.y];
     }
+
+    getTileSize() {
+        return this.tileSize;
+    }
 }
