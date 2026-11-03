@@ -25,7 +25,7 @@ export class BootScene extends Phaser.Scene {
     const startButton = this.add.text(
       this.cameras.main.centerX,
       this.cameras.main.centerY + 50,
-      'Start Prototype',
+      'Split Screen Mode',
       {
         fontFamily: 'Courier New',
         fontSize: '28px',
@@ -38,6 +38,24 @@ export class BootScene extends Phaser.Scene {
     startButton.on('pointerdown', () => {
       this.scene.start('PlayScene');
     });
+
+    const otherMode = this.add.text( this.scale.width/2, this.scale.height/2 + 80, 'Turn-Based Mode',
+      {
+        fontFamily: 'Courier New',
+        fontSize: '28px',
+        color: '#888a88',
+        padding: { x: 10, y: 5 }
+      }
+    ).setOrigin(0.5).setInteractive();
+
+    // move to Playscene using the button
+    startButton.on('pointerdown', () => {
+      this.scene.start('PlayScene');
+    });
+
+    otherMode.on('pointerdown', () => {
+      this.scene.start('TurnMode');
+    })
 
     console.log(GameManager.Instance.get("moves"));
   }
