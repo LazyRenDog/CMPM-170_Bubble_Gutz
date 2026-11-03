@@ -166,9 +166,9 @@ export class PlayScene extends Phaser.Scene {
             this.boardOffsetY - 80,
             this.tileSize - 20, 65, 0x888888
         ).setOrigin(0);
-        this.add.text(this.refOffsetX + 1 * this.tileSize + 15, this.boardOffsetY - 60, 'GOAL', {
+        this.add.text(this.refOffsetX + 1 * this.tileSize + 25, this.boardOffsetY - 60, 'GOAL', {
             fontSize: '14px',
-            color: '#ffffff'
+            color: '#ffffff', 
         });
 
             // blank grid for wanderer
@@ -254,6 +254,8 @@ export class PlayScene extends Phaser.Scene {
             let nextCol = this.playerCol + dCol;
             let nextRow = this.playerRow + dRow;
 
+            button.setBackgroundColor('blue')   // visual feedback that buttonw as pressed
+
             // check if player moves into the monument from top middle tile 
             // (col 1, row 0) -> (col 1, row -1)
             if (nextCol === 1 && nextRow === -1) {
@@ -272,6 +274,17 @@ export class PlayScene extends Phaser.Scene {
                 this.checkCollisions();
             }
         });
+
+        // Visual feedback when button is pressed
+        button.on('pointerover', () => {
+            button.setBackgroundColor('#000000')
+            button.setColor('#ffffff')
+        })
+        //reset coloring when not hovering
+        button.on('pointerout', () => {
+            button.setBackgroundColor('#ffffff')
+            button.setColor('#000000')
+        })
     }
 
     //Instructions for the game
@@ -388,6 +401,5 @@ export class PlayScene extends Phaser.Scene {
     }
 
     update() {
-
     }
 }
