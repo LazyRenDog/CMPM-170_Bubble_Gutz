@@ -1,4 +1,4 @@
-import { Board } from "../../gameobjects/board.js";
+import { Board } from "../../gameobjects/Board.js";
 import { TextButton } from "../../gameobjects/TextButton.js";
 import { GameManager } from "../../core/GameManager.js";
 
